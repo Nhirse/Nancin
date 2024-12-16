@@ -1,6 +1,25 @@
 from FlashCards import Flash
+import json
 #do textfile thing
-#what if they type the same name for the flashcard
+
+def save_file(flashcards, filename="FlashCards.json"): #meant to save the list FlashCards containing flash objects to a json file
+    FlashCards_data = []
+    for j in flashcards:
+        FlashCards_data.append(j.to_dict()) #using to_dict to save it as a list of dictionaries rather than list of objects
+    with open(filename, "w") as y:
+        json.dump(FlashCards_data,y,indent=4) #writing the list FlashCards_data into the json file
+
+# def update_file(filename="FlashCards.json"): #supposed to add json file list of Flash objects to the main file's FlashCards list
+#     flashcards=[]
+#     try:
+#         with open(filename, "r") as y:
+#             FlashCards_data=json.load(y) #adding the list of dictionaries in json file to this new FlashCards_data list
+#         for j in FlashCards_data:
+#             y=Flash(" ")
+#             flashcards.append(y.to_object(j))
+#             return flashcards#For each item (which is in dictionary form) of FlashCards_data, add the object form to FlashCards list
+#     except FileNotFoundError:
+#         return []
 
 FlashCards=[]
 FlashTitles=[]
@@ -35,6 +54,8 @@ def access_flash(z):
             # if else conditions check passed.
         elif select == 4:
             z.display_flash()
+        elif select == 5:
+            z.quiz()
         else:
             print("Invalid input. Choose a number from the menu.")
 
@@ -48,6 +69,7 @@ def delete_flash():
                 check=False
                 FlashCards.pop(i)
                 FlashTitles.pop(i)
+
         if(check):
             print("Couldn't find Flashcard set. Try again. ")
             sure=input("If you don't want to delete anything type nvm. If you do press enter.")
@@ -61,13 +83,14 @@ while 1:
     print("99. Exit")
     choice=int(input("Please type the number of what you want to do: "))
     if choice==99:
+        save_file(FlashCards)
         break
     elif choice==1:
         create_flash()
 
     elif choice==2:
         check=True
-        while check: #type the title of the flashcard set you want then do access_flash
+        while check: #type the title of the flashcard set you want then do access_flash to access them
             for i in range(0,len(FlashTitles)):
                 print(f"{i+1}. {FlashTitles[i]}")
             select=int(input("Type a number from the menu the title of the flashcard set you want to access: "))
