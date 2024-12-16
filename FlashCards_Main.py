@@ -62,14 +62,15 @@ def access_flash(z):
 def delete_flash():
     check=True
     sure=""
-    while check or (sure=="nvm"):
+    j=0
+    while check and (sure!="nvm"):
         delete=input("Type the title of the Flashcard set you want to delete: ")
         for i in range(0,len(FlashTitles)):
             if delete==FlashTitles[i]:
                 check=False
-                FlashCards.pop(i)
-                FlashTitles.pop(i)
-
+                j=i
+        FlashCards.pop(j)
+        FlashTitles.pop(j)
         if(check):
             print("Couldn't find Flashcard set. Try again. ")
             sure=input("If you don't want to delete anything type nvm. If you do press enter.")
@@ -108,7 +109,7 @@ while 1:
         for i in range(0,len(FlashCards)):
             print(f"--{FlashTitles[i]}--")
             FlashCards[i].display_flash()
-            print("\n")
+            # print("\n")
 
     elif choice==5:
         check=True
@@ -122,7 +123,6 @@ while 1:
                     FlashCards[i].quiz()
             if(check):
                 print("Couldn't find flashcard set. Try again.")
-
     else:
         print("Invalid input. Choose a number from the menu.")
 
