@@ -1,7 +1,8 @@
-class Flash: #Will have a quiz function
+import json
+class Flash: #Create a title
     def __init__(self, t): #a flashcard object contains multiple cards within a dictionary flash.
         self.__all_cards={}
-        self.__title_of_flash=t
+        self.__title_of_flash=t #When I create each flash object, it gives all the titles of previous ones
         self.__definitions_list=[]
         self.__terms_list=[]
         self.__term=""
@@ -37,9 +38,11 @@ class Flash: #Will have a quiz function
                     self.__terms_list.pop(i)
                     self.__definitions_list.pop(i)
                     self.__all_cards.pop(f"Card {i+1}")
+                    self.__counter-=1
             if(check):
                 print("The card couldn't be found. Try Again.")
                 sure = input("If you don't want to delete anything type nvm. If you do press enter.")
+
 
     def modify_card(self):
         check=True
@@ -58,15 +61,13 @@ class Flash: #Will have a quiz function
                         select=int(input("Type the number from the menu of you want to do: "))
                         if select==1:
                             name2=input("Please type what you want to change the term name to: ")
-                            self.__terms_list[j]=name2
-                            self.__all_cards.pop("C")
-                            update={f"Card {j}":
-                                        {name2:self.__definitions_list}}
-                            self.__all_cards.update(update)
+                            self.__all_cards[f"Card {j+1}"].pop(self.__terms_list[j])
+                            self.__all_cards[f"Card {j+1}"].update({name2:self.__definitions_list[j]})
+                            self.__terms_list[j] = name2
                         elif select==2:
                             defin=input("Please type what you want to change the definition to: ")
                             self.__definitions_list[j]=defin
-                            self.__all_cards.update({f"Card {j}":{self.__terms_list[j]:defin}})
+                            self.__all_cards[f"Card {j+1}"].update({self.__terms_list[j]:defin})
                         elif select==3:
                             break
                         else:
@@ -81,21 +82,41 @@ class Flash: #Will have a quiz function
     def quiz(self):
         again="yes"
         while again=="yes":
-            print(f"Welcome to the {self.__title_of_flash} quiz!") #Remember to ignore cases on all of the input stuff
+            print(f"Welcome to the {self.__title_of_flash} quiz!") #Remember to ignore cases on all the input stuff
             print("You'll see a definition and try to type the correct term that matches it. Make sure the term you type is exact.\n")
             points=0
             #Consider using math.rand somehow
             for i in range(0,len(self.__definitions_list)):
-                print(+self.__definitions_list[i])
+                print(f"{i+1} {self.__definitions_list[i]}")
                 answer=input("Term: ")
                 if self.__terms_list[i]==answer:
-                    print("Correct!")
+                    print("Correct!\n")
                     points+=1
                 else: #Would they want the correct answer?
-                    print(f"Incorrect. The correct answer is {self.__terms_list[i]}")
+                    print(f"Incorrect. The correct answer is {self.__terms_list[i]}\n")
             print(f"Your score out of {len(self.__terms_list)} is {points}.")
-            print(f"Your quiz grade is {points/len(self.__terms_list)} percent.") #optional: saying good job, poor job, try again, or a letter grade
-            again=input("If you would like to try again type the number yes. if not, type no to exit.")
+            print(f"Your quiz grade is {points/len(self.__terms_list)*100} percent.") #optional: saying good job, poor job, try again, or a letter grade
+            again=input("If you would like to try again type the number yes. if not, type no to exit: ").lower()
+
+    def to_dict(self): #stores the values of the current Flash object in a dictionary
+        data = { "Title of flashcard":self.__title_of_flash,
+                "All Cards":self.__all_cards,
+                 "List of terms":self.__terms_list,
+                 "List of definitions":self.__definitions_list,
+        }
+        return data
+
+    # def to_object(self, data):  # parameter is a dictionary like that which to_dict creates
+    #     obj = Flash(data["Title of flashcard"])
+    #     obj.__all_cards = data["All Cards"]
+    #     obj.__terms_list = data["List of terms"]
+    #     obj.__definitions_list = data["List of definitions"]
+    #     obj.__counter = len(obj.__terms_list)
+    #     return obj
+
+
+
+
 
 
 
